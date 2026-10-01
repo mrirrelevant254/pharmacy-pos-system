@@ -1,0 +1,17 @@
+# Ignore Node modules
+pharmacy-pos-frontend/node_modules/
+
+# Ignore Environment variables
+.env
+.env.local
+
+# Ignore Go dependencies and build files
+pharmacy-pos/vendor/
+pharmacy-pos/*.exe
+
+# Ignore build files
+pharmacy-pos-frontend/dist/
+
+# OS files
+.DS_Store
+Thumbs.db
