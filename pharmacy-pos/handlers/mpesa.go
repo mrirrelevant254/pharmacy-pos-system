@@ -16,10 +16,10 @@ import (
 	"github.com/joho/godotenv" //  Add this
 )
 
-// Load environment variables when the file is initialized
-var _ = godotenv.Load("../.env") // Adjust path if your .env is in the root folder
 
-// Change 'const' to 'var' so we can use os.Getenv
+var _ = godotenv.Load("../.env") 
+
+
 var (
 	ConsumerKey    = os.Getenv("MPESA_CONSUMER_KEY")
 	ConsumerSecret = os.Getenv("MPESA_CONSUMER_SECRET")
