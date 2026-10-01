@@ -4,6 +4,7 @@ pharmacy-pos-frontend/node_modules/
 # Ignore Environment variables
 .env
 .env.local
+.env.production
 
 # Ignore Go dependencies and build files
 pharmacy-pos/vendor/

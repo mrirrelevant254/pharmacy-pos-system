@@ -9,16 +9,22 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"pharmacy-pos/db"
 	"time"
+
+	"github.com/joho/godotenv" //  Add this
 )
 
-// ️ PASTE YOUR ACTUAL DARAJA CREDENTIALS HERE ⚠️
-const (
-	ConsumerKey    = "Gpa6h1odLJ8AAMPqyZSM1O83MYrAY1KaavuX0MYtM6LNuue9"
-	ConsumerSecret = "AAvSNUrCDhjuRVvxHcXYRhcKsU77LoZvIZtGAwuzMBeAQpUGdFRAM3byCY8Lmh8V"
-	Shortcode      = "174379" // Standard Sandbox Paybill
-	Passkey        = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919" // Standard Sandbox Passkey
+// Load environment variables when the file is initialized
+var _ = godotenv.Load("../.env") // Adjust path if your .env is in the root folder
+
+// Change 'const' to 'var' so we can use os.Getenv
+var (
+	ConsumerKey    = os.Getenv("MPESA_CONSUMER_KEY")
+	ConsumerSecret = os.Getenv("MPESA_CONSUMER_SECRET")
+	Shortcode      = os.Getenv("MPESA_SHORTCODE")
+	Passkey        = os.Getenv("MPESA_PASSKEY")
 	BaseURL        = "https://sandbox.safaricom.co.ke"
 )
 
