@@ -83,6 +83,9 @@ func main() {
 			r.Post("/stock-update", handlers.UpdateStock)
 			r.Get("/analytics/advanced", handlers.GetAdvancedAnalytics)
 			r.Get("/analytics/products", handlers.GetProductRevenue)
+			r.Get("/staff", handlers.GetStaff)
+			r.Post("/staff", handlers.CreateStaff)
+			r.Put("/staff", handlers.UpdateStaff)
 		})
 
 		// M-Pesa Initiation (Protected: Only logged-in cashiers can trigger STK Push)

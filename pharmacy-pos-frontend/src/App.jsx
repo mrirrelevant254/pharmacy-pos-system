@@ -1,3 +1,4 @@
+import StaffManagementScreen from './screens/StaffManagementScreen'; 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import LoginScreen from './auth/LoginScreen';
@@ -73,6 +74,12 @@ function AppRoutes() {
             <Route path="/lab" element={
                 <RoleGuard allowedRoles={['lab_tech', 'doctor', 'admin']}>
                     <LabScreen />
+                </RoleGuard>
+            } />
+
+            <Route path="/admin/staff" element={
+                <RoleGuard allowedRoles={['admin']}>
+                    <StaffManagementScreen />
                 </RoleGuard>
             } />
         </Routes>

@@ -1,12 +1,17 @@
 package middleware
 
-import (
-	"context"
-	"net/http"
-	"strings"
+import "github.com/rs/cors"
 
-	"github.com/golang-jwt/jwt/v5"
-)
+// Inside your middleware setup:
+c := cors.New(cors.Options{
+    AllowedOrigins: []string{
+        "http://localhost:5173", 
+        "https://your-frontend-app.vercel.app" //  We will add your Vercel URL here later
+    },
+    AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+    AllowedHeaders: []string{"Content-Type", "Authorization"},
+    AllowCredentials: true,
+})
 
 // ContextKey is a custom type for context keys to avoid collisions
 type ContextKey string
