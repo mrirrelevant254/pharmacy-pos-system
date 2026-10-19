@@ -1,16 +1,12 @@
 import axios from 'axios';
 
-const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
-});
+// In production, this will be relative (served by Go). 
+// In development (npm run dev), it falls back to localhost.
+const baseURL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8080/api' : '/api');
 
-// Interceptor to attach the JWT token to every request automatically
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+const api = axios.create({
+    baseURL: baseURL,
+    withCredentials: true, // Important for cookies/sessions if you use them
 });
 
 export default api;
