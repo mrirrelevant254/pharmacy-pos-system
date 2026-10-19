@@ -3,6 +3,10 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"pharmacy-pos/db"
 	"pharmacy-pos/handlers"
 	"pharmacy-pos/middleware"
@@ -24,7 +28,7 @@ func main() {
 
 	// 3. Enable CORS for React frontend
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "https://*.ngrok-free.app"}, // Added ngrok for M-Pesa callbacks
+		AllowedOrigins:   []string{"http://localhost:5173", "https://*.ngrok-free.app", "*"}, 
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
@@ -66,7 +70,7 @@ func main() {
 			r.Post("/results", handlers.SaveLabResult)
 		})
 
-				// Doctor/Consultation Routes
+		// Doctor/Consultation Routes
 		r.Route("/api/doctor", func(r chi.Router) {
 			r.Use(middleware.RequireRole("doctor", "admin"))
 			r.Get("/patients", handlers.SearchPatients)
@@ -92,7 +96,32 @@ func main() {
 		r.Post("/api/mpesa/stkpush", handlers.InitiateSTKPush)
 	})
 
-	// 6. Start Server
-	log.Println(" Server starting on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	// 6. Serve React Frontend (Single Page Application)
+	// This MUST be after all /api/ routes are defined!
+	r.HandleFunc("/*", func(w http.ResponseWriter, req *http.Request) {
+		// If it's an API route, let the API router handle it (returns 404 if route doesn't exist)
+		if strings.HasPrefix(req.URL.Path, "/api/") {
+			http.NotFound(w, req)
+			return
+		}
+		
+		// Try to serve the exact requested static file (CSS, JS, Images)
+		filePath := filepath.Join("./web", req.URL.Path)
+		if _, statErr := os.Stat(filePath); statErr == nil {
+			http.ServeFile(w, req, filePath)
+			return
+		}
+		
+		// If the file doesn't exist, serve index.html for React Router (SPA fallback)
+		http.ServeFile(w, req, "./web/index.html")
+	})
+
+	// 7. Start Server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("🚀 Server starting on http://localhost:%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }

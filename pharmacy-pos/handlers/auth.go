@@ -34,11 +34,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID, name, role, passwordHash string
+	
+	// 👇 FIXED: Updated column names to match the Neon schema we created
 	err := db.Pool.QueryRow(context.Background(), 
-		"SELECT id, name, role, password_hash FROM users WHERE employee_no = $1 AND active = true", 
+		"SELECT id, full_name, role, password FROM users WHERE employee_no = $1 AND is_active = true", 
 		req.EmployeeNo).Scan(&userID, &name, &role, &passwordHash)
 
 	if err != nil {
+		log.Printf("❌ DB Query Error: %v", err) // Added logging to help debug if needed
 		logAudit(nil, "login_failed", "Invalid employee number")
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
